@@ -1,73 +1,52 @@
-# React + TypeScript + Vite
+# OBS Circle Mask Generator
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+生成摄像头圆形掩码图片，用于 OBS 场景抠像。
 
-Currently, two official plugins are available:
+Generate circular mask images for OBS webcam overlay.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 在线使用 / Online
 
-## React Compiler
+部署后可访问: https://holywen.github.io/obs-camera-mask-generator
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 功能 / Features
 
-## Expanding the ESLint configuration
+- 支持多种分辨率预设 (1080p/720p/540p/360p/Custom)
+- 实时预览生成效果
+- 中英文双语支持
+- 纯前端实现，无需后端服务
+- 移动端适配
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 技术栈 / Tech Stack
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- React + TypeScript
+- Vite
+- Tailwind CSS
+- Canvas API (高斯模糊仅作用于 Alpha 通道)
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## 开发 / Development
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 构建 / Build
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run build
 ```
+
+## 等效 ImageMagick 命令
+
+```bash
+magick -size 1280x720 xc:none \
+  -fill black \
+  -draw "circle 640,360 640,0" \
+  -channel A -blur 0x6 +channel \
+  -strip \
+  obs_circle_mask_final.png
+```
+
+## License
+
+MIT
