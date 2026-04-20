@@ -12,6 +12,10 @@ export interface Translations {
   centerY: string
   radius: string
   blur: string
+  shape: string
+  shapes: string[]
+  points: string
+  innerRadius: string
   download: string
   generating: string
   error: string
@@ -20,25 +24,29 @@ export interface Translations {
 
 export const translations: Record<Language, Translations> = {
   zh: {
-    title: 'OBS 圆形掩码生成器',
-    subtitle: '生成摄像头圆形遮罩图片，用于 OBS 场景抠像',
+    title: 'OBS 掩码生成器',
+    subtitle: '生成摄像头遮罩图片，用于 OBS 场景抠像',
     resolutionLabel: '摄像头分辨率',
     resolutions: ['1080p', '720p', '540p', '360p', '自定义'],
     custom: '自定义',
     width: '宽度',
     height: '高度',
-    centerX: '圆心 X',
-    centerY: '圆心 Y',
-    radius: '圆半径',
-    blur: '模糊半径',
+    centerX: '中心 X',
+    centerY: '中心 Y',
+    radius: '半径',
+    blur: '模糊',
+    shape: '形状',
+    shapes: ['圆形', '六边形', '星形', '菱形', '正方形', '三角形'],
+    points: '星形角数',
+    innerRadius: '星形内径比',
     download: '下载 PNG',
     generating: '生成中...',
     error: '生成失败',
-    footer: '生成的图片为透明背景 + 黑色模糊圆形，可直接在 OBS 中使用',
+    footer: '生成的图片为透明背景 + 模糊形状，可直接在 OBS 中使用',
   },
   en: {
-    title: 'OBS Circle Mask Generator',
-    subtitle: 'Generate circular mask images for OBS webcam overlay',
+    title: 'OBS Mask Generator',
+    subtitle: 'Generate mask images for OBS webcam overlay',
     resolutionLabel: 'Camera Resolution',
     resolutions: ['1080p', '720p', '540p', '360p', 'Custom'],
     custom: 'Custom',
@@ -48,10 +56,14 @@ export const translations: Record<Language, Translations> = {
     centerY: 'Center Y',
     radius: 'Radius',
     blur: 'Blur',
+    shape: 'Shape',
+    shapes: ['Circle', 'Hexagon', 'Star', 'Diamond', 'Square', 'Triangle'],
+    points: 'Star Points',
+    innerRadius: 'Inner Radius Ratio',
     download: 'Download PNG',
     generating: 'Generating...',
     error: 'Generation failed',
-    footer: 'Generated image has transparent background with black blurred circle, ready for OBS',
+    footer: 'Generated image has transparent background with blurred shape, ready for OBS',
   },
 }
 

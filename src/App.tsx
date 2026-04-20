@@ -1,6 +1,6 @@
 import './App.css'
 import { useState, useCallback, useRef, useEffect } from 'react'
-import { generateMask, type MaskParams } from './utils/canvas'
+import { generateMask, type MaskParams, type MaskShape } from './utils/canvas'
 import { translations, type Language } from './i18n'
 
 interface Resolution {
@@ -53,6 +53,9 @@ function App() {
     cy: 360,
     radius: 360,
     blur: 6,
+    shape: 'circle',
+    points: 5,
+    innerRadius: 0.5,
   })
   const [previewUrl, setPreviewUrl] = useState<string>('')
   const [isGenerating, setIsGenerating] = useState(false)
@@ -114,7 +117,7 @@ function App() {
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `obs_circle_mask_${params.width}x${params.height}.png`
+    a.download = `obs_mask_${params.shape}_${params.width}x${params.height}.png`
     a.click()
     URL.revokeObjectURL(url)
   }
@@ -158,6 +161,33 @@ function App() {
           <InputField label={t.radius} name="radius" value={params.radius} onChange={updateParam} min={1} max={Math.max(params.width, params.height)} />
           <InputField label={t.blur} name="blur" value={params.blur} onChange={updateParam} min={0} max={100} step={0.5} />
         </div>
+
+        <div className="input-row">
+          <div className="input-group">
+            <label>{t.shape}</label>
+            <div className="shape-selector">
+              {t.shapes.map((label, index) => {
+                const shapeTypes: MaskShape[] = ['circle', 'hexagon', 'star', 'diamond', 'square', 'triangle']
+                return (
+                  <button
+                    key={label}
+                    className={`shape-btn ${params.shape === shapeTypes[index] ? 'active' : ''}`}
+                    onClick={() => setParams((prev) => ({ ...prev, shape: shapeTypes[index] }))}
+                  >
+                    {label}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        </div>
+
+        {params.shape === 'star' && (
+          <div className="input-row">
+            <InputField label={t.points} name="points" value={params.points ?? 5} onChange={(_, value) => setParams((prev) => ({ ...prev, points: value }))} min={3} max={12} />
+            <InputField label={t.innerRadius} name="innerRadius" value={Math.round((params.innerRadius ?? 0.5) * 100)} onChange={(_, value) => setParams((prev) => ({ ...prev, innerRadius: value / 100 }))} min={10} max={90} />
+          </div>
+        )}
       </section>
 
       <section className="preview-section">

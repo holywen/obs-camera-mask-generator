@@ -1,3 +1,5 @@
+export type MaskShape = 'circle' | 'hexagon' | 'star' | 'diamond' | 'square' | 'triangle'
+
 export interface MaskParams {
   width: number
   height: number
@@ -5,6 +7,9 @@ export interface MaskParams {
   cy: number
   radius: number
   blur: number
+  shape: MaskShape
+  points?: number
+  innerRadius?: number
 }
 
 function generateGaussianBlurKernel(sigma: number): Float32Array {
@@ -66,8 +71,58 @@ function applyAlphaBlur(data: Uint8ClampedArray, width: number, height: number, 
   }
 }
 
+function drawPolygon(ctx: CanvasRenderingContext2D, cx: number, cy: number, radius: number, sides: number) {
+  ctx.moveTo(cx + radius * Math.cos(-Math.PI / 2), cy + radius * Math.sin(-Math.PI / 2))
+  for (let i = 1; i <= sides; i++) {
+    const angle = -Math.PI / 2 + (i * 2 * Math.PI) / sides
+    ctx.lineTo(cx + radius * Math.cos(angle), cy + radius * Math.sin(angle))
+  }
+  ctx.closePath()
+}
+
+function drawStar(ctx: CanvasRenderingContext2D, cx: number, cy: number, outerRadius: number, innerRadius: number, points: number) {
+  const step = Math.PI / points
+  ctx.moveTo(cx + outerRadius * Math.cos(-Math.PI / 2), cy + outerRadius * Math.sin(-Math.PI / 2))
+  for (let i = 0; i < points; i++) {
+    const outerAngle = -Math.PI / 2 + (i * 2 * Math.PI) / points
+    const innerAngle = outerAngle + step
+    ctx.lineTo(cx + outerRadius * Math.cos(outerAngle), cy + outerRadius * Math.sin(outerAngle))
+    ctx.lineTo(cx + innerRadius * Math.cos(innerAngle), cy + innerRadius * Math.sin(innerAngle))
+  }
+  ctx.closePath()
+}
+
+function drawShape(ctx: CanvasRenderingContext2D, cx: number, cy: number, radius: number, shape: MaskShape, points?: number, innerRadius?: number) {
+  ctx.beginPath()
+  switch (shape) {
+    case 'circle':
+      ctx.arc(cx, cy, radius, 0, Math.PI * 2)
+      break
+    case 'hexagon':
+      drawPolygon(ctx, cx, cy, radius, 6)
+      break
+    case 'triangle':
+      drawPolygon(ctx, cx, cy, radius, 3)
+      break
+    case 'diamond':
+      drawPolygon(ctx, cx, cy, radius, 4)
+      break
+    case 'square':
+      ctx.rect(cx - radius, cy - radius, radius * 2, radius * 2)
+      break
+    case 'star':
+      const starPoints = points ?? 5
+      const starInnerRadius = (innerRadius ?? 0.5) * radius
+      drawStar(ctx, cx, cy, radius, starInnerRadius, starPoints)
+      break
+    default:
+      ctx.arc(cx, cy, radius, 0, Math.PI * 2)
+  }
+  ctx.fill()
+}
+
 export async function generateMask(params: MaskParams): Promise<Blob> {
-  const { width, height, cx, cy, radius, blur } = params
+  const { width, height, cx, cy, radius, blur, shape, points, innerRadius } = params
 
   const canvas = document.createElement('canvas')
   canvas.width = width
@@ -78,9 +133,7 @@ export async function generateMask(params: MaskParams): Promise<Blob> {
   ctx.clearRect(0, 0, width, height)
 
   ctx.fillStyle = '#000000'
-  ctx.beginPath()
-  ctx.arc(cx, cy, radius, 0, Math.PI * 2)
-  ctx.fill()
+  drawShape(ctx, cx, cy, radius, shape, points, innerRadius)
 
   const imageData = ctx.getImageData(0, 0, width, height)
   applyAlphaBlur(imageData.data, width, height, blur)
