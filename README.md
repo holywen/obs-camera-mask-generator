@@ -1,6 +1,6 @@
 # OBS Circle Mask Generator
 
-生成摄像头圆形掩码图片，用于 OBS 场景抠像。
+生成摄像头圆形蒙版图片，用于 OBS 场景抠像。
 
 Generate circular mask images for OBS webcam overlay.
 

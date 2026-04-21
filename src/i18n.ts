@@ -24,8 +24,8 @@ export interface Translations {
 
 export const translations: Record<Language, Translations> = {
   zh: {
-    title: 'OBS 掩码生成器',
-    subtitle: '生成摄像头遮罩图片，用于 OBS 场景抠像',
+    title: 'OBS 蒙版生成器',
+    subtitle: '生成摄像头蒙版图片，用于 OBS 场景抠像',
     resolutionLabel: '摄像头分辨率',
     resolutions: ['1080p', '720p', '540p', '360p', '自定义'],
     custom: '自定义',
