@@ -52,7 +52,7 @@ function App() {
     cx: 640,
     cy: 360,
     radius: 360,
-    blur: 6,
+    blur: 0,
     shape: 'circle',
     points: 5,
     innerRadius: 0.5,
@@ -163,7 +163,7 @@ function App() {
         </div>
 
         <div className="input-row">
-          <div className="input-group">
+          <div className="input-group shape-input-group">
             <label>{t.shape}</label>
             <div className="shape-selector">
               {t.shapes.map((label, index) => {

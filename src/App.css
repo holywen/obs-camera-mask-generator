@@ -140,6 +140,10 @@ h1 {
   gap: 0.375rem;
 }
 
+.shape-input-group {
+  grid-column: span 2;
+}
+
 .input-group label {
   font-size: 0.75rem;
   color: #9ca3af;
